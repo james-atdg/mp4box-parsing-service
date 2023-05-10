@@ -7,8 +7,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import com.james.castlabs.exception.ErrorType;
-import com.james.castlabs.exception.ServiceException;
 import com.james.castlabs.model.MP4Box;
 import com.james.castlabs.model.ParseRequest;
 import com.james.castlabs.service.CastLabsService;
