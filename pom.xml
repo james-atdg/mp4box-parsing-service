@@ -11,7 +11,7 @@
 	<groupId>com.james</groupId>
 	<artifactId>castlabs</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>curbee</name>
+	<name>castlabs</name>
 	<description>Project for castLabs</description>
 	<properties>
 		<java.version>17</java.version>
