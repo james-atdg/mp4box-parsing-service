@@ -1,59 +1,45 @@
 package com.james.castlabs.service;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import com.james.castlabs.model.MP4Box;
 import com.james.castlabs.util.Constants;
 import lombok.RequiredArgsConstructor;
 
-import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
-import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 /**
- *  The {@code CastLabsService} class ...
- *  <p>
- *  ...
- *  </p>
+ *  The {@code CastLabsService} class retrieves an MP4 file
+ *  from a URL, extracts the MP4 boxes from it creating
+ *  a nested list of MP4Box objects and returning this
+ *  to the caller.
  */
 @Service
 @RequiredArgsConstructor
 public class CastLabsService {
 	
 	/**
-     * The input url is retrieved via a readable byte channel and written
-     * to a temp file where it is then processed and deleted after completion.
-     * The file is written to disk first in order to determine the length
-     * of the file which is utilized is handling cases where the last
-     * box is not a MOOF or TRAF container.
+     * The input url is retrieved via a buffered stream and passed to a
+     * data stream for processing.  This approach ensures that the file
+     * is processed directly as received and is not stored in memory.
      */
     public List<MP4Box> readMP4FromUri(String uri) throws IOException, InterruptedException, MalformedURLException {
     	URL url = new URL(uri);
-    	File file = File.createTempFile("temp", null);
-        
-    	ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
-    	FileOutputStream fileOutputStream = new FileOutputStream(file.getAbsolutePath());
-    	fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+    	URLConnection urlConnection = url.openConnection();
     	
-    	DataInputStream in = new DataInputStream(new FileInputStream(file));
+        InputStream bin = new BufferedInputStream(urlConnection.getInputStream());
+        DataInputStream in = new DataInputStream(bin);
     	
-    	List<MP4Box> boxes = processFile(in, file.length());
-    	file.delete();
+    	List<MP4Box> boxes = processFile(in);
     	in.close();
     	return boxes;
     }
@@ -68,19 +54,23 @@ public class CastLabsService {
      * repeats if there's additional data after the end of parent.  This produces
      * the nested MP4 box structure which is then returned.
      */
-    public List<MP4Box> processFile(DataInputStream in, long contentLength) throws IOException{
+    public List<MP4Box> processFile(DataInputStream in) throws IOException{
     	List<MP4Box> boxes = new ArrayList<>();
     	boolean more = true;
     	while (more) {
     		try {
 		    	int totalLength = in.readInt();
-		    	if (contentLength < totalLength) break; //past the end of file
-			    byte[] boxTypeBytes = new byte[4];
+		    	byte[] boxTypeBytes = new byte[4];
 			    in.readFully(boxTypeBytes);
 			    String type = new String(boxTypeBytes, StandardCharsets.UTF_8);
 			    MP4Box parent = MP4Box.builder().length(totalLength).type(type).build();
 			    totalLength -= 8;
-			    getNextBox(in, parent, totalLength);
+			    
+			    if (type.equals(Constants.ParentBoxType.moof.name()) || type.equals(Constants.ParentBoxType.traf.name()))
+			    	getNextBox(in, parent, totalLength);
+			    else 
+			    	in.skipBytes(totalLength);
+			    
 			    boxes.add(parent);
     		} catch (EOFException e) {
     			more = false;
