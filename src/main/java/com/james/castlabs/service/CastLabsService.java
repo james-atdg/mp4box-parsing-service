@@ -45,7 +45,7 @@ public class CastLabsService {
     }
     
     /**
-     * The processing of extracting MP4 boxes begins with reading the first four
+     * The process of extracting MP4 boxes begins with reading the first four
      * bytes in the file which specify the length of the first box.  This is 
      * followed by reading the next four bytes which specify the box type.  Once
      * the first box is read all child boxes are read recursively and attached
