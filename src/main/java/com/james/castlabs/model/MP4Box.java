@@ -12,5 +12,5 @@ public class MP4Box {
 	private int length;
 	private String type;
 	@Builder.Default
-	private List<MP4Box> children = new ArrayList<>();
+	private List<MP4Box> boxes = new ArrayList<>();
 }

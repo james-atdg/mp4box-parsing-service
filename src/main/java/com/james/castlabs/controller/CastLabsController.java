@@ -1,5 +1,9 @@
 package com.james.castlabs.controller;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +20,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Validated
-@RequestMapping(value = "/api/castlabs")
-@Tag(name = "CastLabs API", description = "Provides parsing of MP4 boxes from MP4 files hosted at a URL.")
+@RequestMapping(value = "/api/mp4")
+@Tag(name = "MP4 Box Parsing API", description = "Provides parsing of MP4 boxes from MP4 files hosted at a URL.")
 public class CastLabsController {
 	
 	@Autowired
@@ -34,6 +38,16 @@ public class CastLabsController {
         return "Hello!";
     }
     
-    
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "MP4 boxes retrieved successfully"),
+        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Not found", content = @Content),
+        @ApiResponse(responseCode = "500", description = "Server error", content = @Content)
+    })
+    @Operation(summary = "Get MP4 boxes from MP4 file located at a URL.")
+    @PostMapping("/parse/{uri}")
+    public List<MP4Box> autocomplete(@RequestBody ParseRequest parseRequest) throws MalformedURLException, IOException, InterruptedException {
+        return castLabsService.readMP4FromUri(parseRequest.getUrl());
+    }
     
 }

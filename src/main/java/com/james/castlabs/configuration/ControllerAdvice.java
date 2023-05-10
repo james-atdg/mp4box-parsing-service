@@ -8,6 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+
 import com.james.castlabs.exception.ErrorMessage;
 import com.james.castlabs.exception.ErrorType;
 import com.james.castlabs.exception.ServiceException;
@@ -40,6 +44,39 @@ public class ControllerAdvice {
         String message = messages.getMessage(e.getMessage());
         ErrorMessage errorMessage = new ErrorMessage()
             .setType(ErrorType.BAD_REQUEST)
+            .setMessage(message)
+            .setDateTime(LocalDateTime.now());
+        return toResponseEntity(errorMessage);
+    }
+    
+    @ExceptionHandler({IOException.class})
+    public ResponseEntity<ErrorMessage> handleIOException(IOException e) {
+        log.error(e.getMessage());
+        String message = messages.getMessage(e.getMessage());
+        ErrorMessage errorMessage = new ErrorMessage()
+            .setType(ErrorType.BAD_REQUEST)
+            .setMessage(message)
+            .setDateTime(LocalDateTime.now());
+        return toResponseEntity(errorMessage);
+    }
+    
+    @ExceptionHandler({MalformedURLException.class})
+    public ResponseEntity<ErrorMessage> handleMalformedURLException(MalformedURLException e) {
+        log.error(e.getMessage());
+        String message = messages.getMessage(e.getMessage());
+        ErrorMessage errorMessage = new ErrorMessage()
+            .setType(ErrorType.BAD_REQUEST)
+            .setMessage(message)
+            .setDateTime(LocalDateTime.now());
+        return toResponseEntity(errorMessage);
+    }
+    
+    @ExceptionHandler({InterruptedException.class})
+    public ResponseEntity<ErrorMessage> handleInterruptedException(InterruptedException e) {
+        log.error(e.getMessage());
+        String message = messages.getMessage(e.getMessage());
+        ErrorMessage errorMessage = new ErrorMessage()
+            .setType(ErrorType.INTERNAL_SERVER_ERROR)
             .setMessage(message)
             .setDateTime(LocalDateTime.now());
         return toResponseEntity(errorMessage);
