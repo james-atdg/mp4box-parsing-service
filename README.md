@@ -14,8 +14,8 @@ To build the project execute <b>build.sh</b> from within the project directory.
 
 To run the application after building execute <b>run.sh</b> from within the project directory.
 
-The application may be accessed at: http://localhost:8082
-* parse request end-point: POST [http://localhost:8082/api/castlabs/parse](http://localhost:8082/api/castlabs/parse)
+The application may be accessed at: 
+* parse request end-point: POST [http://localhost:8082/api/mp4/parse](http://localhost:8082/api/castlabs/parse)
 
 * rest api documentation: [http://localhost:8082/swagger-ui/index.html?displayRequestDuration=true&operationsSorter=method&configUrl=/api-docs/swagger-config#/](http://localhost:8082/swagger-ui/index.html?displayRequestDuration=true&operationsSorter=method&configUrl=/api-docs/swagger-config#/)
  
