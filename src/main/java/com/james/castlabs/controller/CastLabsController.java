@@ -44,7 +44,7 @@ public class CastLabsController {
     })
     @Operation(summary = "Get MP4 boxes from MP4 file located at a URL.")
     @PostMapping("/parse")
-    public List<MP4Box> autocomplete(@RequestBody ParseRequest parseRequest) throws MalformedURLException, IOException, InterruptedException {
+    public List<MP4Box> parse(@RequestBody ParseRequest parseRequest) throws MalformedURLException, IOException, InterruptedException {
         return castLabsService.readMP4FromUri(parseRequest.getUrl());
     }
     

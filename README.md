@@ -18,6 +18,11 @@ The application may be accessed at:
 * parse request end-point: POST [http://localhost:8082/api/mp4/parse](http://localhost:8082/api/castlabs/parse)
 
 * rest api documentation: [http://localhost:8082/swagger-ui/index.html?displayRequestDuration=true&operationsSorter=method&configUrl=/api-docs/swagger-config#/](http://localhost:8082/swagger-ui/index.html?displayRequestDuration=true&operationsSorter=method&configUrl=/api-docs/swagger-config#/)
+
+<u>Example Request</u>
+ 
+curl -X POST http://localhost:8082/api/mp4/parse -H "Content-Type: application/json" -d '{"url": "https://demo.castlabs.com/tmp/text0.mp4"}'
+
  
 <i>See the rest api doc for request and response definitions</i>
 
